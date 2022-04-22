@@ -1,10 +1,28 @@
-import static org.junit.Assert.*; //importing Java.util
-import org.junit.*;               //importing Java.util
-public class MarkdownParseTest {  //Calling the class to run the code
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
-    @Test                         // method used to run a test using JUnit
-    public void addition() {      // Creating a test method called addition
-        assertEquals(2, 1 + 1);   // Runs the test (1+1) and if it equals 2 then the test will pass.
+import static org.junit.Assert.*;
+import org.junit.*;
+public class MarkdownParseTest {
+    @Test
+    public void addition() {
+        assertEquals(2, 1 + 1);
     }
+    @Test
+    public void testLinks() {
+        try {
+            Path fileName = Path.of("test-file.md");
+            String content = Files.readString(fileName);
+            List<String> links = MarkdownParse.getLinks(content);
+            List<String> expected = List.of("https://something.com", "some-page.html");
+            assertEquals(expected, links);
 
+        }
+        catch(IOException e)  {
+            
+        }
+    }
 }

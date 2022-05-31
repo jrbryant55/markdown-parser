@@ -10,39 +10,36 @@ public class MarkdownParse {
     public static ArrayList<String> getLinks(String markdown) {
         ArrayList<String> toReturn = new ArrayList<>();
         // Find the next [, then find the ], then get the first starting
-        // character of the link. Proceed to find the last character by finding the new
-        // line (if there is no new line that means you are at the end of the file so get
+        // Proceed to find the last character by finding the new line
+        // (if there is no new line that means you are at the end of the file so get
         // the whole length and subtract)
         int currentIndex = 0;
         while(currentIndex < markdown.length()) {
             int openBracket = markdown.indexOf("[", currentIndex);
             int closeBracket = markdown.indexOf("]", openBracket);
-            
-            int beginLink = markdown.indexOf("(", closeBracket);
+
+            int beginLink = closeBracket + 2; // Skip to the start of the link
+
+            int newLine = markdown.indexOf("\n", closeBracket); // Find a new line if there is one
+
+            // If there is no newline then just get end of whole file and subtract
             int endLink;
+            if (newLine == -1) {
+                newLine = markdown.length(); 
+                endLink = newLine - 1; // Get index of end of link
+            } else {
+                endLink = newLine - 1; // Get index of end of link
+            }
 
             String link;
-             int newLine = markdown.indexOf("\n", closeBracket); // Find a new line if there is one
-             if(beginLink != closeBracket + 1) {
-                 if(markdown.indexOf("[", closeBracket + 1) == -1) {
-                     break;
-                 }
-                 else {
-                     currentIndex = markdown.indexOf("[", closeBracket + 1);
-                 }
-             }
-             else {
-                 endLink = markdown.indexOf(")", beginLink);
-                 link = markdown.substring(beginLink + 1, endLink);
-                 toReturn.add(link);
-               
-                 currentIndex = markdown.indexOf("[", closeBracket + 1);
-                 if(currentIndex == -1) {
-                     break;
-                 }
+            if (openBracket != -1) {
+                link = markdown.substring(beginLink, endLink);
+                toReturn.add(link);
+                currentIndex = newLine;
+            } else {
+                break;
             }
         }
-
         return toReturn;
     }
 
